@@ -1,7 +1,9 @@
 defmodule Boopity.Pet.Cache do
-  alias Boopity.Repo.Cache
+  alias Boopity.{Repo, Repo.Cache}
 
   @behaviour Cache
+
+  @topic "pets"
 
   def child_spec(opts) do
     %{
@@ -15,6 +17,12 @@ defmodule Boopity.Pet.Cache do
 
   @impl Cache
   def table_name, do: :pets
+
+  @impl Cache
+  def fetch_fn, do: fn -> Repo.pets(true) end
+
+  @impl Cache
+  def topic, do: @topic
 
   @impl Cache
   def start_link(_args) do

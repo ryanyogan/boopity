@@ -3,13 +3,24 @@ defmodule BoopityWeb.PetsLive do
 
   alias BoopityWeb.LiveEncoder
 
+  @topic "pets"
+
   @impl true
   def mount(_params, _session, socket) do
+    BoopityWeb.Endpoint.subscribe(@topic)
+
     {:ok, assign_socket(socket)}
   end
 
   def render_pet(socket, pet) do
     Phoenix.View.render(BoopityWeb.PageView, "pet.html", socket: socket, pet: pet)
+  end
+
+  @impl true
+  def handle_info(%{event: "update"}, socket) do
+    IO.puts("UPDA")
+    IO.inspect(socket)
+    {:noreply, assign_socket(socket)}
   end
 
   defp assign_socket(socket) do

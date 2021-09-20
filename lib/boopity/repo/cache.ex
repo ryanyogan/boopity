@@ -6,8 +6,14 @@ defmodule Boopity.Repo.Cache do
 
   require Logger
 
+  alias Boopity.Repo.Cache.Synchronizer
+
   @callback table_name :: atom()
   @callback start_link(keyword) :: GenServer.on_start()
+  @callback fetch_fn :: fun()
+  @callback topic :: String.t()
+
+  @secret "cache-secret-lawlkat"
 
   def all(cache) do
     cache
@@ -47,20 +53,31 @@ defmodule Boopity.Repo.Cache do
 
   @impl GenServer
   def init(name) do
+    Process.flag(:trap_exit, true)
+
     name
     |> table_for()
     |> :ets.new([:ordered_set, :protected, :named_table])
 
-    {:ok, %{name: name}}
+    {:ok, pid} = Synchronizer.start_link(cache: name)
+    ref = Process.monitor(pid)
+
+    {:ok, %{name: name, synchronizer_ref: ref, hash: ""}}
   end
 
   @impl GenServer
-  def handle_cast({:set_all, items}, %{name: name} = state)
+  def handle_cast({:set_all, items}, %{name: name, hash: hash} = state)
       when is_list(items) do
     Logger.info("#{name}.set_all setting new items and broadcasting")
 
-    Enum.each(items, &:ets.insert(table_for(name), {&1.id, &1}))
-    {:noreply, state}
+    new_hash = generate_hash(items)
+
+    if hash != new_hash do
+      Enum.each(items, &:ets.insert(table_for(name), {&1.id, &1}))
+      BoopityWeb.Endpoint.broadcast(apply(name, :topic, []), "update", %{})
+    end
+
+    {:noreply, %{state | hash: new_hash}}
   end
 
   def handle_cast({:set, id, item}, %{name: name} = state) do
@@ -71,5 +88,26 @@ defmodule Boopity.Repo.Cache do
     {:noreply, state}
   end
 
+  @impl GenServer
+  def handle_info(
+        {:DOWN, ref, :process, _object, _reason},
+        %{synchronizer_ref: ref, name: name} = state
+      ) do
+    {:ok, pid} = Synchronizer.start_link(cache: name)
+    ref = Process.monitor(pid)
+
+    {:noreply, %{state | synchronizer_ref: ref}}
+  end
+
+  def handle_info({:EXIT, _, _}, state) do
+    {:noreply, state}
+  end
+
   defp table_for(name), do: apply(name, :table_name, [])
+
+  defp generate_hash(items) do
+    :hmac
+    |> :crypto.mac(:sha256, @secret, :erlang.term_to_binary(items))
+    |> Base.encode64()
+  end
 end
