@@ -15,4 +15,6 @@ config :phoenix, :json_library, Jason
 
 config :tesla, adapter: Tesla.Adapter.Hackney
 
+config :boopity, Boopity.Repo, adapter: Boopity.Repo.Http
+
 import_config "#{Mix.env()}.exs"

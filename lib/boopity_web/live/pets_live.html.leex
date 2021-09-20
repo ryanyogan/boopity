@@ -1,0 +1,3 @@
+<%= if @pets do %>
+	<%= for pet <- @pets, do: render_pet(@socket, pet) %>
+<% end %>

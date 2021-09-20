@@ -1,3 +1,3 @@
-<section class="phx-hero">
-  <h1>Welcome to Phoenix!</h1>
-</section>
+<%= if @pets do %>
+  <%= for pet <- @pets, do: render_pet(pet) %>
+<% end %>

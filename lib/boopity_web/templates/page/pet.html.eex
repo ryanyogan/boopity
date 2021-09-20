@@ -1,0 +1,6 @@
+<ul>
+	<li><%= @pet.name %></li>
+	<li><%= @pet.dob %></li>
+	<li><%= @pet.notes %></li>
+	<li><%= @pet.medications %></li>
+</ul>

@@ -1,4 +1,4 @@
-defmodule BoopityWeb.PageLive do
+defmodule BoopityWeb.PetsLive do
   use BoopityWeb, :live_view
 
   alias BoopityWeb.LiveEncoder
@@ -8,8 +8,8 @@ defmodule BoopityWeb.PageLive do
     {:ok, assign_socket(socket)}
   end
 
-  def render_pet(pet) do
-    Phoenix.View.render(BoopityWeb.PageView, "pet.html", pet: pet)
+  def render_pet(socket, pet) do
+    Phoenix.View.render(BoopityWeb.PageView, "pet.html", socket: socket, pet: pet)
   end
 
   defp assign_socket(socket) do
