@@ -64,3 +64,8 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :boopity, Services.Airtable,
+  api_key: "keyxEnaRiDJWvLSU0",
+  base_id: "appqV9WLEoMWZqDXn",
+  api_url: "https://api.airtable.com/v0/"

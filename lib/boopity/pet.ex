@@ -6,8 +6,8 @@ defmodule Boopity.Pet do
           name: String.t(),
           notes: String.t(),
           image: String.t(),
-          animal: String.t(),
-          sex: String.t(),
+          animal: [String.t()],
+          sex: [String.t()],
           dob: Date.t(),
           medications: [String.t()]
         }
