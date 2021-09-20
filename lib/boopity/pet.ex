@@ -23,4 +23,6 @@ defmodule Boopity.Pet do
     :dob,
     :medications
   ]
+
+  def table_name, do: :pets
 end
