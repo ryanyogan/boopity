@@ -19,6 +19,7 @@ defmodule BoopityWeb.Router do
 
     live "/", PageLive
     live "/pets", PetsLive
+    live "/pets/:id", ShowPetLive
     live "/medications", MedicationsLive
   end
 

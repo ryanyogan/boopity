@@ -1,5 +1,9 @@
 <ul>
-	<li><%= @pet.name %></li>
+	<li>
+		<%= live_patch to: Routes.live_path(@socket, BoopityWeb.ShowPetLive, @pet.id) do %>
+			<%= @pet.name %>
+		<% end %>
+	</li>
 	<li><%= @pet.dob %></li>
 	<li><%= @pet.notes %></li>
 	<li><%= @pet.medications %></li>
