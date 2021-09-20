@@ -35,7 +35,9 @@ defmodule Boopity.MixProject do
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:tesla, "~> 1.3"},
+      {:hackney, "~> 1.16.0"}
     ]
   end
 
